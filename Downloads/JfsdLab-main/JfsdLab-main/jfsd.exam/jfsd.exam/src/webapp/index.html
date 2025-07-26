@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        .comments {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .comment {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 60%;
+            border-radius: 5px;
+        }
+        .comment h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+        .comment p {
+            margin: 5px 0;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Comments from JSONPlaceholder</h1>
+    <div id="comments" class="comments">
+        <!-- Comments will be displayed here -->
+    </div>
+    <div id="error" class="error" style="display:none;">
+        Failed to load comments. Please try again later.
+    </div>
+
+    <script>
+        // Function to fetch and display comments
+        function fetchComments() {
+            fetch('http://localhost:8080/api/comments')  // Adjust the URL if necessary
+                .then(response => response.json())
+                .then(comments => {
+                    const commentsContainer = document.getElementById('comments');
+                    commentsContainer.innerHTML = '';  // Clear any previous content
+
+                    // Loop through the comments and display them
+                    comments.forEach(comment => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.classList.add('comment');
+                        commentDiv.innerHTML = `
+                            <h3>${comment.name}</h3>
+                            <p><strong>Email:</strong> ${comment.email}</p>
+                            <p>${comment.body}</p>
+                        `;
+                        commentsContainer.appendChild(commentDiv);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('error').style.display = 'block';  // Show error message
+                    console.error('Error fetching comments:', error);
+                });
+        }
+
+        // Fetch comments when the page loads
+        window.onload = fetchComments;
+    </script>
+</body>
+</html>
